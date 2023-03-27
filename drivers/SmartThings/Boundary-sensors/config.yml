@@ -1,0 +1,4 @@
+name: 'Boundary-senors'
+packageKey: 'Boundary-sensors'
+permissions:
+  zwave: {}

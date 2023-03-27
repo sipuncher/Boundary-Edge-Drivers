@@ -1,0 +1,41 @@
+name: boundary-siren
+components:
+- id: main
+  capabilities:
+  - id: alarm
+    version: 1
+    config:
+      values:
+        - key: "alarm.value"
+          enabledValues:
+            - 'off'
+            - both
+        - key: "{{enumCommands}}"
+          enabledValues:
+            - 'off'
+            - both
+  - id: battery
+    version: 1
+  - id: refresh
+    version: 1
+  - id: tamperAlert
+    version: 1
+  - id: temperatureMeasurement
+    version: 1
+    config:
+      values:
+        - key: "temperature.value"
+          range: [-20, 100]
+  categories:
+  - name: Siren
+  preferences:
+  - name: "ledEnabled"
+    title: "Wake up interval (not implemented)"
+    description: "Whether the blue LED is enabled at night time."
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        0 : "No"
+        1 : "Yes"
+      default: 1

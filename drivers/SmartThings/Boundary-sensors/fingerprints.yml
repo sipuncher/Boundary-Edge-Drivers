@@ -1,0 +1,19 @@
+zwaveManufacturer:
+- id: "Boundary Siren"
+  deviceLabel: Boundary Siren
+  manufacturerId: 0x044A
+  productType: 0x0004
+  productId: 0x0002
+  deviceProfileName: boundary-siren
+- id: 044A/0004/0003
+  deviceLabel: Boundary Motion Sensor
+  manufacturerId: 0x044A
+  productType: 0x0004
+  productId: 0x0003
+  deviceProfileName: boundary-motion
+- id: 044A/0004/0007
+  deviceLabel: Boundary Contact Sensor
+  manufacturerId: 0x044A
+  productType: 0x0004
+  productId: 0x0007
+  deviceProfileName: boundary-contact

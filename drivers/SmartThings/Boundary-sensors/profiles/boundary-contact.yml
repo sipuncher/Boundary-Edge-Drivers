@@ -1,0 +1,40 @@
+name: boundary-contact
+components:
+- id: main
+  capabilities:
+  - id: contactSensor
+    version: 1
+  - id: battery
+    version: 1  
+  - id: temperatureMeasurement
+    version: 1
+    config:
+      values:
+        - key: "temperature.value"
+          range: [-20, 100]
+  - id: tamperAlert
+    version: 1
+  - id: refresh
+    version: 1
+  categories:
+  - name: ContactSensor
+preferences:
+  - name: "ledEnabled"
+    title: "Blue LED enabled indications"
+    description: "Whether the blue LED flashes with state change."
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        0 : "No"
+        1 : "Yes"
+      default: 1
+  - name: "wakeUpInterval"
+    title: "Wake up interval (not implemented)"
+    description: "The shorter the time, the more frequently the the device will report measurements."
+    required: false
+    preferenceType: integer
+    definition:
+      minimum: 60
+      maximum: 3600
+      default: 380

@@ -1,0 +1,59 @@
+name: boundary-motion
+components:
+- id: main
+  capabilities:
+  - id: motionSensor
+    version: 1
+  - id: battery
+    version: 1
+  - id: temperatureMeasurement
+    version: 1
+    config:
+      values:
+        - key: "temperature.value"
+          range: [-20, 100]
+  - id: tamperAlert
+    version: 1
+  - id: refresh
+    version: 1
+  categories:
+  - name: MotionSensor
+preferences:
+  - name: "ledEnabled"
+    title: "Blue LED enabled indications"
+    description: "Whether the blue LED flashes with state change."
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        0 : "No"
+        1 : "Yes"
+      default: 1
+  - name: "wakeUpInterval"
+    title: "Wake up interval (not implemented)"
+    description: "The shorter the time, the more frequently the the device will report measurements."
+    required: false
+    preferenceType: integer
+    definition:
+      minimum: 60
+      maximum: 3600
+      default: 380
+  - name: "motionSensitivityLevel"
+    title: "Motion sensor sensitivity"
+    description: "Adjusts the sensitivity of the motion sensor to reduce triggering due to pets"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        24: Normal sensitivity
+        80: Pet sensitivity
+      default: 24
+  - name: "motionDetectedTimer"
+    title: "Motion detected timer"
+    description: "Stops repeated triggers of motion if within this number of seconds"
+    required: false
+    preferenceType: integer
+    definition:
+      minimum: 0
+      maximum: 180
+      default: 20
