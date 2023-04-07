@@ -28,9 +28,9 @@ components:
           range: [-20, 100]
   categories:
   - name: Siren
-  preferences:
+preferences:
   - name: "ledEnabled"
-    title: "Wake up interval (not implemented)"
+    title: "Blue LED enabled"
     description: "Whether the blue LED is enabled at night time."
     required: false
     preferenceType: enumeration

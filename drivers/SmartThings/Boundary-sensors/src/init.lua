@@ -66,7 +66,7 @@ local driver_template = {
     capabilities.motionSensor
   },
   sub_drivers = {
-    --require("boundary-siren"),
+    require("boundary-siren"),
   },
   lifecycle_handlers = {
     infoChanged = info_changed,

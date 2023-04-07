@@ -20,7 +20,7 @@ components:
   - name: ContactSensor
 preferences:
   - name: "ledEnabled"
-    title: "Blue LED enabled indications"
+    title: "Blue LED enabled"
     description: "Whether the blue LED flashes with state change."
     required: false
     preferenceType: enumeration

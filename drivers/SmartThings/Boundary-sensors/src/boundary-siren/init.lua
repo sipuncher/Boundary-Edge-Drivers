@@ -12,17 +12,12 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
-local capabilities = require "st.capabilities"
---- @type st.zwave.CommandClass
-local cc = require "st.zwave.CommandClass"
---- @type st.zwave.CommandClass.Basic
-local Basic = (require "st.zwave.CommandClass.Basic")({version=1})
---- @type st.zwave.CommandClass.Battery
-local Notification = (require "st.zwave.CommandClass.Notification")({version=3})
---- @type st.zwave.CommandClass.Indicator
-local Indicator = (require "st.zwave.CommandClass.Indicator")({version=1})
+--- @type st.zwave.CommandClass.Configuration
+local Configuration = (require "st.zwave.CommandClass.Configuration")({ version=4 })
 
-local MULTIFUNCTIONAL_SIREN_FINGERPRINTS = {
+local log = require "log"
+
+local BOUNDARY_SIREN_FINGERPRINTS = {
   { manufacturerId = 0x044A, productType = 0x0004, productId = 0x0002 }
 }
 
@@ -31,8 +26,8 @@ local MULTIFUNCTIONAL_SIREN_FINGERPRINTS = {
 --- @param driver Driver driver instance
 --- @param device Device device isntance
 --- @return boolean true if the device proper, else false
-local function can_handle_multifunctional_siren(opts, driver, device, ...)
-  for _, fingerprint in ipairs(MULTIFUNCTIONAL_SIREN_FINGERPRINTS) do
+local function can_handle_boundary_siren(opts, driver, device, ...)
+  for _, fingerprint in ipairs(BOUNDARY_SIREN_FINGERPRINTS) do
     if device:id_match(fingerprint.manufacturerId, fingerprint.productType, fingerprint.productId) then
       return true
     end
@@ -40,18 +35,41 @@ local function can_handle_multifunctional_siren(opts, driver, device, ...)
   return false
 end
 
-local do_configure = function(self, device)
-  device:refresh()
-  device:send(Notification:Get({notification_type = Notification.notification_type.HOME_SECURITY}))
-  device:send(Basic:Get({}))
+local function device_init(self, device)
+  device.thread:call_on_schedule(3600, function()
+    if device.preferences.ledEnabled ~= nil then
+      local ledEnabled = 0
+
+      if device.preferences.ledEnabled == "1" then
+        ledEnabled = Enable_led_parameter()
+      end
+
+      device:send(Configuration:Set({parameter_number = 1, size = 4, configuration_value = ledEnabled}))
+      log.debug("Updated LED status sent to Siren")
+    end
+
+    log.debug("Hourly siren status refresh requested")
+    device:default_refresh()
+  end, 'Siren Poll Schedule')
 end
 
-local multifunctional_siren = {
+function Enable_led_parameter()
+  local current_hour = tonumber(os.date("%H"))
+
+  if current_hour >5 and current_hour <20 then
+    log.debug("Time is between 06:00 and 20:00 so disabling siren LED")
+    return 0
+  end
+  return 1
+end
+
+
+local boundary_siren = {
   lifecycle_handlers = {
-    doConfigure = do_configure
+    init = device_init
   },
-  NAME = "multifunctional siren",
-  can_handle = can_handle_multifunctional_siren,
+  NAME = "Boundary siren",
+  can_handle = can_handle_boundary_siren,
 }
 
-return multifunctional_siren
+return boundary_siren

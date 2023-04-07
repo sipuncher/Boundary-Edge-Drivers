@@ -25,9 +25,6 @@ local devices = {
       mfrs = 0x044A,
       product_types = 0x0004,
       product_ids = 0x0002
-    },
-    PARAMETERS = {
-      ledEnabled = {parameter_number = 1, size = 4}
     }
   },
   BOUNDARY_MOTION = {
