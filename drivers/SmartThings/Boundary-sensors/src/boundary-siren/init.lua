@@ -35,8 +35,11 @@ local function can_handle_boundary_siren(opts, driver, device, ...)
   return false
 end
 
+--- Setup a timer to a) disable/enable the Blue LED at night time and b) call refresh to get updated temp/battery
 local function device_init(self, device)
-  device.thread:call_on_schedule(3600, function()
+  local timer_tick = 3603
+
+  device.thread:call_on_schedule(timer_tick, function()
     if device.preferences.ledEnabled ~= nil then
       local ledEnabled = 0
 
@@ -45,7 +48,6 @@ local function device_init(self, device)
       end
 
       device:send(Configuration:Set({parameter_number = 1, size = 4, configuration_value = ledEnabled}))
-      log.debug("Updated LED status sent to Siren")
     end
 
     log.debug("Hourly siren status refresh requested")
@@ -53,13 +55,19 @@ local function device_init(self, device)
   end, 'Siren Poll Schedule')
 end
 
+--- Determines whether to enable the LED based upon time of day
+--- @return integer 1 or 0 to set the device parameter
 function Enable_led_parameter()
+  local start_hour = 5
+  local end_hour = 19
+  
   local current_hour = tonumber(os.date("%H"))
 
-  if current_hour >5 and current_hour <20 then
-    log.debug("Time is between 06:00 and 20:00 so disabling siren LED")
+  if current_hour >start_hour and current_hour <end_hour then
+    log.debug("Time is between " .. start_hour .. " and " .. end_hour .. " so disabling siren LED")
     return 0
   end
+  log.debug("Time is not between " .. start_hour .. " and " .. end_hour .. " so enabling siren LED")
   return 1
 end
 
