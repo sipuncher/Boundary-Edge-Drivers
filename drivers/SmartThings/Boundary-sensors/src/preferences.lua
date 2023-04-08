@@ -16,7 +16,8 @@ local log = require "log"
 
 --- @type st.zwave.CommandClass.Configuration
 local Configuration = (require "st.zwave.CommandClass.Configuration")({ version=4 })
-
+--- @type st.zwave.CommandClass.WakeUp
+local WakeUp = (require "st.zwave.CommandClass.WakeUp")({ version = 1 })
 local Notification = (require "st.zwave.CommandClass.Notification")({version=3})
 
 local devices = {
@@ -25,6 +26,9 @@ local devices = {
       mfrs = 0x044A,
       product_types = 0x0004,
       product_ids = 0x0002
+    },
+    PARAMETERS = {
+      heartBeat = {parameter_number = 2, size = 4},
     }
   },
   BOUNDARY_MOTION = {
@@ -36,7 +40,8 @@ local devices = {
     PARAMETERS = {
       ledEnabled = {parameter_number = 1, size = 4},
       motionSensitivityLevel = {parameter_number = 11, size = 4},
-      motionDetectedTimer = {parameter_number = 2, size = 4}
+      motionDetectedTimer = {parameter_number = 2, size = 4},
+      wakeUpInterval = {parameter_number = -99, size = -99} -- not a z-wave parameter, code will ignore this.
     }
   },
   BOUNDARY_CONTACT = {
@@ -47,20 +52,29 @@ local devices = {
     },
     PARAMETERS = {
       ledEnabled = {parameter_number = 1, size = 4},
+      wakeUpInterval = {parameter_number = -99, size = -99} -- not a z-wave parameter, code will ignore this.
     }
   },
 }
 
 local preferences = {}
 
+--- Checks if any preferences have changed and then sends to the device.  
+--- Special case for wake-up interval handled as not a z-wave parameter.
+--- Requests a home security notification from the device (triggered state) to correct any out of sync issues
 preferences.update_preferences = function(driver, device, args)
   local prefs = preferences.get_device_parameters(device)
   if prefs ~= nil then
     for id, value in pairs(device.preferences) do
       if not (args and args.old_st_store) or (args.old_st_store.preferences[id] ~= value and prefs and prefs[id]) then
         local new_parameter_value = preferences.to_numeric_value(device.preferences[id])
-        device:send(Configuration:Set({parameter_number = prefs[id].parameter_number, size = prefs[id].size, configuration_value = new_parameter_value}))
-        log.debug("Updated preferences sent to device")
+        if id ~= "wakeUpInterval" then
+          device:send(Configuration:Set({parameter_number = prefs[id].parameter_number, size = prefs[id].size, configuration_value = new_parameter_value}))
+          log.debug("Updated preferences sent to device")
+        else
+          device:send(WakeUp:IntervalSet({node_id = driver.environment_info.hub_zwave_id, seconds = new_parameter_value}))
+          log.debug("Updated Wake-up interval sent to device")
+        end
       end
     end
   end

@@ -37,7 +37,7 @@ end
 
 --- Setup a timer to a) disable/enable the Blue LED at night time and b) call refresh to get updated temp/battery
 local function device_init(self, device)
-  local timer_tick = 3603
+  local timer_tick = 3630 -- just over an hour to avoid it being the same minutes past the hour every hour
 
   device.thread:call_on_schedule(timer_tick, function()
     if device.preferences.ledEnabled ~= nil then
@@ -58,12 +58,12 @@ end
 --- Determines whether to enable the LED based upon time of day
 --- @return integer 1 or 0 to set the device parameter
 function Enable_led_parameter()
-  local start_hour = 5
-  local end_hour = 19
+  local start_hour = 4
+  local end_hour = 20
   
   local current_hour = tonumber(os.date("%H"))
 
-  if current_hour >start_hour and current_hour <end_hour then
+  if current_hour > start_hour and current_hour < end_hour then
     log.debug("Time is between " .. start_hour .. " and " .. end_hour .. " so disabling siren LED")
     return 0
   end

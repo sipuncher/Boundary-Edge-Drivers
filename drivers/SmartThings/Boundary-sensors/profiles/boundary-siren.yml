@@ -39,3 +39,12 @@ preferences:
         0 : "No"
         1 : "Yes"
       default: 1
+  - name: "heartBeat"
+    title: "Heartbeat frequency"
+    description: "The period (minutes) between the siren sending updated temp/battery status."
+    required: false
+    preferenceType: integer
+    definition:
+      minimum: 1
+      maximum: 1440
+      default: 20

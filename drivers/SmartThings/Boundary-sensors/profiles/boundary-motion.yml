@@ -30,7 +30,7 @@ preferences:
         1 : "Yes"
       default: 1
   - name: "wakeUpInterval"
-    title: "Wake up interval (not implemented)"
+    title: "Wake up interval"
     description: "The shorter the time, the more frequently the the device will report measurements."
     required: false
     preferenceType: integer
