@@ -21,7 +21,7 @@ local BOUNDARY_SIREN_FINGERPRINTS = {
   { manufacturerId = 0x044A, productType = 0x0004, productId = 0x0002 }
 }
 
---- Determine whether the passed device is multifunctional siren
+--- Determine whether the passed device is boundary siren
 ---
 --- @param driver Driver driver instance
 --- @param device Device device isntance
@@ -37,7 +37,7 @@ end
 
 --- Setup a timer to a) disable/enable the Blue LED at night time and b) call refresh to get updated temp/battery
 local function device_init(self, device)
-  local timer_tick = 3630 -- just over an hour to avoid it being the same minutes past the hour every hour
+  local timer_tick = 3780 -- just over an hour to avoid it being the same minutes past the hour every hour
 
   device.thread:call_on_schedule(timer_tick, function()
     if device.preferences.ledEnabled ~= nil then

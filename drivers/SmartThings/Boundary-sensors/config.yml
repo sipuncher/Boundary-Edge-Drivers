@@ -1,4 +1,4 @@
-name: 'Boundary-senors'
+name: 'Boundary-sensors'
 packageKey: 'Boundary-sensors'
 permissions:
   zwave: {}
