@@ -35,23 +35,24 @@ local function can_handle_boundary_siren(opts, driver, device, ...)
   return false
 end
 
---- Setup a timer to a) disable/enable the Blue LED at night time and b) call refresh to get updated temp/battery
+--- Setup timer to a) disable/enable the Blue LED at night time and b) call refresh to get updated temp/battery
 local function device_init(self, device)
-  local timer_tick = 3780 -- just over an hour to avoid it being the same minutes past the hour every hour
+  local timer_tick = 60
 
   device.thread:call_on_schedule(timer_tick, function()
-    if device.preferences.ledEnabled ~= nil then
+    if os.date("%M") == "00" then
       local ledEnabled = 0
 
-      if device.preferences.ledEnabled == "1" then
-        ledEnabled = Enable_led_parameter()
+      if device.preferences.ledEnabled ~= nil then
+        if device.preferences.ledEnabled == "1" then
+          ledEnabled = Enable_led_parameter()
+        end
+        device:send(Configuration:Set({parameter_number = 1, size = 4, configuration_value = ledEnabled}))
+
+      log.debug("Hourly siren status refresh requested")
+      device:default_refresh() -- The siren wasn't sending temperature updates unless manually refreshed
       end
-
-      device:send(Configuration:Set({parameter_number = 1, size = 4, configuration_value = ledEnabled}))
     end
-
-    log.debug("Hourly siren status refresh requested")
-    device:default_refresh()
   end, 'Siren Poll Schedule')
 end
 
@@ -60,14 +61,14 @@ end
 function Enable_led_parameter()
   local start_hour = 4
   local end_hour = 20
-  
+
   local current_hour = tonumber(os.date("%H"))
 
   if current_hour > start_hour and current_hour < end_hour then
-    log.debug("Time is between " .. start_hour .. " and " .. end_hour .. " so disabling siren LED")
+    log.debug("Time (UTC) is between " .. start_hour .. ":00 and " .. end_hour .. ":00 so disabling siren LED")
     return 0
   end
-  log.debug("Time is not between " .. start_hour .. " and " .. end_hour .. " so enabling siren LED")
+  log.debug("Time (UTC) is not between " .. start_hour .. ":00 and " .. end_hour .. ":00 so enabling siren LED")
   return 1
 end
 

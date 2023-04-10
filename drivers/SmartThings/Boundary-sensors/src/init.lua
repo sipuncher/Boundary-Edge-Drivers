@@ -36,6 +36,7 @@ local function do_configure(driver, device)
     device.thread:call_with_delay(1, delayed_command)
 end
 
+--- Register function to be called when device wakes up 
 local function device_init(self, device)
   device:set_update_preferences_fn(preferences.update_preferences)
 end
