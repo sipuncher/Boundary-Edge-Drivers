@@ -72,7 +72,6 @@ function Enable_led_parameter()
   return 1
 end
 
-
 local boundary_siren = {
   lifecycle_handlers = {
     init = device_init

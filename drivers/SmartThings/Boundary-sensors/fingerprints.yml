@@ -1,5 +1,5 @@
 zwaveManufacturer:
-- id: "Boundary Siren"
+- id: 044A/0004/0002
   deviceLabel: Boundary Siren
   manufacturerId: 0x044A
   productType: 0x0004
