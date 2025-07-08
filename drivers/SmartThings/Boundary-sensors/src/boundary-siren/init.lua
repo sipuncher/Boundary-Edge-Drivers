@@ -48,10 +48,10 @@ local function device_init(self, device)
           ledEnabled = Enable_led_parameter()
         end
         device:send(Configuration:Set({parameter_number = 1, size = 4, configuration_value = ledEnabled}))
+      end
 
       log.debug("Hourly siren status refresh requested")
       device:default_refresh() -- The siren wasn't sending temperature updates unless manually refreshed
-      end
     end
   end, 'Siren Poll Schedule')
 end
