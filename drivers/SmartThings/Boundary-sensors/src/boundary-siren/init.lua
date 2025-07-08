@@ -24,7 +24,7 @@ local BOUNDARY_SIREN_FINGERPRINTS = {
 --- Determine whether the passed device is boundary siren
 ---
 --- @param driver Driver driver instance
---- @param device Device device isntance
+--- @param device Device device instance
 --- @return boolean true if the device proper, else false
 local function can_handle_boundary_siren(opts, driver, device, ...)
   for _, fingerprint in ipairs(BOUNDARY_SIREN_FINGERPRINTS) do
