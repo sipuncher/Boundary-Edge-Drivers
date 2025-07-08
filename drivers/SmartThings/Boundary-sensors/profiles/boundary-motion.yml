@@ -31,7 +31,7 @@ preferences:
       default: 1
   - name: "wakeUpInterval"
     title: "Wake up interval"
-    description: "The shorter the time, the more frequently the the device will report measurements."
+    description: "The shorter the time, the more frequently the device will report measurements."
     required: false
     preferenceType: integer
     definition:
@@ -55,5 +55,4 @@ preferences:
     preferenceType: integer
     definition:
       minimum: 0
-      maximum: 180
-      default: 20
+      maximum: 180      default: 20
